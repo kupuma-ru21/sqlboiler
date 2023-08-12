@@ -44,6 +44,9 @@ func (u *linkService) CreateLinks(ctx context.Context, input []*model.CreateLink
 			Address: null.StringFrom(i.Address),
 		}
 		err := newLink.Insert(ctx, u.exec, boil.Infer())
+		if err != nil {
+			return nil, err
+		}
 
 		resLink := &model.Link{
 			ID:      newLink.ID,
@@ -51,10 +54,6 @@ func (u *linkService) CreateLinks(ctx context.Context, input []*model.CreateLink
 			Address: newLink.Address.String,
 		}
 		resLinks = append(resLinks, resLink)
-		// TODO: change position of error handling
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	return resLinks, nil
@@ -75,8 +74,9 @@ func (u *linkService) UpdateLink(ctx context.Context, input model.UpdateLinkInpu
 
 	dbLink.Title = null.StringFrom(input.Title)
 	dbLink.Address = null.StringFrom(input.Address)
-	// TODO: add error handling
-	dbLink.Update(ctx, u.exec, boil.Infer())
+	if _, err := dbLink.Update(ctx, u.exec, boil.Infer()); err != nil {
+		return nil, err
+	}
 
 	return &model.Link{
 		ID:      dbLink.ID,
