@@ -15,6 +15,9 @@ type Query {
   user(
     name: String!
   ): User!
+  link(
+    title: String!
+  ): Link!
 }
 
 input NewLink {

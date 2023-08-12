@@ -57,3 +57,23 @@ func (u *linkService) GetLinks(ctx context.Context) ([]*model.Link, error) {
 
 	return links, nil
 }
+
+func (u *linkService) GetLinkByTitle(ctx context.Context, title string) (*model.Link, error) {
+	dbLink, err := db.Links(
+		qm.Select(
+			db.LinkColumns.ID,
+			db.LinkColumns.Title,
+			db.LinkColumns.Address,
+		),
+		db.LinkWhere.Title.EQ(null.StringFrom(title)),
+	).One(ctx, u.exec)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Link{
+		ID:      dbLink.ID,
+		Title:   title,
+		Address: dbLink.Address.String,
+	}, nil
+}

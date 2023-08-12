@@ -40,6 +40,11 @@ func (r *queryResolver) User(ctx context.Context, name string) (*model.User, err
 	return r.Srv.GetUserByName(ctx, name)
 }
 
+// Link is the resolver for the link field.
+func (r *queryResolver) Link(ctx context.Context, title string) (*model.Link, error) {
+	return r.Srv.GetLinkByTitle(ctx, title)
+}
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
