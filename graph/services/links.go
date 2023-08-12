@@ -116,6 +116,25 @@ func (u *linkService) UpdateLinks(ctx context.Context, input []*model.UpdateLink
 	return resLinks, nil
 }
 
+func (u *linkService) DeleteLink(ctx context.Context, id string) (*model.Link, error) {
+	dbLink, err := db.Links(
+		db.LinkWhere.ID.EQ(id),
+	).One(ctx, u.exec)
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := dbLink.Delete(ctx, u.exec); err != nil {
+		return nil, err
+	}
+
+	return &model.Link{
+		ID:      id,
+		Title:   dbLink.Title.String,
+		Address: dbLink.Title.String,
+	}, nil
+}
+
 func (u *linkService) GetLinks(ctx context.Context) ([]*model.Link, error) {
 	dbLinks, err := db.Links(
 		qm.Select(

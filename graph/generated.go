@@ -56,6 +56,7 @@ type ComplexityRoot struct {
 		CreateLink   func(childComplexity int, input model.CreateLinkInput) int
 		CreateLinks  func(childComplexity int, input []*model.CreateLinkInput) int
 		CreateUser   func(childComplexity int, input model.NewUser) int
+		DeleteLink   func(childComplexity int, id string) int
 		Login        func(childComplexity int, input model.Login) int
 		RefreshToken func(childComplexity int, input model.RefreshTokenInput) int
 		UpdateLink   func(childComplexity int, input model.UpdateLinkInput) int
@@ -79,6 +80,7 @@ type MutationResolver interface {
 	CreateLinks(ctx context.Context, input []*model.CreateLinkInput) ([]*model.Link, error)
 	UpdateLink(ctx context.Context, input model.UpdateLinkInput) (*model.Link, error)
 	UpdateLinks(ctx context.Context, input []*model.UpdateLinkInput) ([]*model.Link, error)
+	DeleteLink(ctx context.Context, id string) (*model.Link, error)
 	CreateUser(ctx context.Context, input model.NewUser) (string, error)
 	Login(ctx context.Context, input model.Login) (string, error)
 	RefreshToken(ctx context.Context, input model.RefreshTokenInput) (string, error)
@@ -167,6 +169,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(model.NewUser)), true
+
+	case "Mutation.deleteLink":
+		if e.complexity.Mutation.DeleteLink == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteLink_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteLink(childComplexity, args["id"].(string)), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -432,6 +446,21 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteLink_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -1014,6 +1043,71 @@ func (ec *executionContext) fieldContext_Mutation_updateLinks(ctx context.Contex
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_updateLinks_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteLink(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteLink(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteLink(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Link)
+	fc.Result = res
+	return ec.marshalNLink2ᚖsqlboilerᚋgraphᚋmodelᚐLink(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteLink(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Link_id(ctx, field)
+			case "title":
+				return ec.fieldContext_Link_title(ctx, field)
+			case "address":
+				return ec.fieldContext_Link_address(ctx, field)
+			case "user":
+				return ec.fieldContext_Link_user(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Link", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteLink_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -3650,6 +3744,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "updateLinks":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_updateLinks(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deleteLink":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteLink(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
