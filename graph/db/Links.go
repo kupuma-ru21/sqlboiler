@@ -24,7 +24,7 @@ import (
 
 // Link is an object representing the database table.
 type Link struct {
-	ID      int64       `boil:"ID" json:"ID" toml:"ID" yaml:"ID"`
+	ID      string      `boil:"ID" json:"ID" toml:"ID" yaml:"ID"`
 	Title   null.String `boil:"Title" json:"Title,omitempty" toml:"Title" yaml:"Title,omitempty"`
 	Address null.String `boil:"Address" json:"Address,omitempty" toml:"Address" yaml:"Address,omitempty"`
 	UserID  null.Int64  `boil:"UserID" json:"UserID,omitempty" toml:"UserID" yaml:"UserID,omitempty"`
@@ -59,22 +59,22 @@ var LinkTableColumns = struct {
 
 // Generated where
 
-type whereHelperint64 struct{ field string }
+type whereHelperstring struct{ field string }
 
-func (w whereHelperint64) EQ(x int64) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperint64) NEQ(x int64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperint64) LT(x int64) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperint64) LTE(x int64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperint64) GT(x int64) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperint64) GTE(x int64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperint64) IN(slice []int64) qm.QueryMod {
+func (w whereHelperstring) EQ(x string) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
+func (w whereHelperstring) NEQ(x string) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
+func (w whereHelperstring) LT(x string) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
+func (w whereHelperstring) LTE(x string) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
+func (w whereHelperstring) GT(x string) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
+func (w whereHelperstring) GTE(x string) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
+func (w whereHelperstring) IN(slice []string) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
 	}
 	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
 }
-func (w whereHelperint64) NIN(slice []int64) qm.QueryMod {
+func (w whereHelperstring) NIN(slice []string) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
@@ -159,12 +159,12 @@ func (w whereHelpernull_Int64) IsNull() qm.QueryMod    { return qmhelper.WhereIs
 func (w whereHelpernull_Int64) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
 
 var LinkWhere = struct {
-	ID      whereHelperint64
+	ID      whereHelperstring
 	Title   whereHelpernull_String
 	Address whereHelpernull_String
 	UserID  whereHelpernull_Int64
 }{
-	ID:      whereHelperint64{field: "\"Links\".\"ID\""},
+	ID:      whereHelperstring{field: "\"Links\".\"ID\""},
 	Title:   whereHelpernull_String{field: "\"Links\".\"Title\""},
 	Address: whereHelpernull_String{field: "\"Links\".\"Address\""},
 	UserID:  whereHelpernull_Int64{field: "\"Links\".\"UserID\""},
@@ -711,7 +711,7 @@ func Links(mods ...qm.QueryMod) linkQuery {
 
 // FindLink retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindLink(ctx context.Context, exec boil.ContextExecutor, iD int64, selectCols ...string) (*Link, error) {
+func FindLink(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*Link, error) {
 	linkObj := &Link{}
 
 	sel := "*"
@@ -1209,7 +1209,7 @@ func (o *LinkSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) er
 }
 
 // LinkExists checks if the Link row exists.
-func LinkExists(ctx context.Context, exec boil.ContextExecutor, iD int64) (bool, error) {
+func LinkExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
 	sql := "select exists(select 1 from \"Links\" where \"ID\"=? limit 1)"
 

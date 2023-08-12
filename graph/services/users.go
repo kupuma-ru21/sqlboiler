@@ -22,7 +22,7 @@ func (u *userService) GetUserByName(ctx context.Context, name string) (*model.Us
 		return nil, err
 	}
 	return &model.User{
-		ID:   string(rune(user.ID)),
+		ID:   user.ID,
 		Name: user.Username,
 	}, nil
 }

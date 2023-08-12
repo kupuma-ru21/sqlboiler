@@ -23,7 +23,7 @@ import (
 
 // User is an object representing the database table.
 type User struct {
-	ID       int64  `boil:"ID" json:"ID" toml:"ID" yaml:"ID"`
+	ID       string `boil:"ID" json:"ID" toml:"ID" yaml:"ID"`
 	Username string `boil:"Username" json:"Username" toml:"Username" yaml:"Username"`
 	Password string `boil:"Password" json:"Password" toml:"Password" yaml:"Password"`
 
@@ -53,35 +53,12 @@ var UserTableColumns = struct {
 
 // Generated where
 
-type whereHelperstring struct{ field string }
-
-func (w whereHelperstring) EQ(x string) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperstring) NEQ(x string) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperstring) LT(x string) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperstring) LTE(x string) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperstring) GT(x string) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperstring) GTE(x string) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperstring) IN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
-}
-func (w whereHelperstring) NIN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
-}
-
 var UserWhere = struct {
-	ID       whereHelperint64
+	ID       whereHelperstring
 	Username whereHelperstring
 	Password whereHelperstring
 }{
-	ID:       whereHelperint64{field: "\"Users\".\"ID\""},
+	ID:       whereHelperstring{field: "\"Users\".\"ID\""},
 	Username: whereHelperstring{field: "\"Users\".\"Username\""},
 	Password: whereHelperstring{field: "\"Users\".\"Password\""},
 }
@@ -667,7 +644,7 @@ func Users(mods ...qm.QueryMod) userQuery {
 
 // FindUser retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindUser(ctx context.Context, exec boil.ContextExecutor, iD int64, selectCols ...string) (*User, error) {
+func FindUser(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*User, error) {
 	userObj := &User{}
 
 	sel := "*"
@@ -1165,7 +1142,7 @@ func (o *UserSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) er
 }
 
 // UserExists checks if the User row exists.
-func UserExists(ctx context.Context, exec boil.ContextExecutor, iD int64) (bool, error) {
+func UserExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
 	sql := "select exists(select 1 from \"Users\" where \"ID\"=? limit 1)"
 

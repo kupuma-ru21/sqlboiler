@@ -15,28 +15,18 @@ sqlite3 ${DBFILE_NAME} "
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS Users(\
-    ID INT NOT NULL UNIQUE,\
+    ID TEXT NOT NULL UNIQUE,\
     Username VARCHAR (127) NOT NULL UNIQUE,\
     Password VARCHAR (127) NOT NULL,\
     PRIMARY KEY (ID)\
 );
 
 CREATE TABLE IF NOT EXISTS Links(\
-    ID INT NOT NULL UNIQUE,\
+    ID TEXT NOT NULL UNIQUE,\
     Title VARCHAR (255) ,\
     Address VARCHAR (255) ,\
     UserID INT ,\
     FOREIGN KEY (UserID) REFERENCES Users(ID) ,\
     PRIMARY KEY (ID)\
 )
-"
-
-# Insert initial data
-echo "inserting initial data..."
-sqlite3 ${DBFILE_NAME} "
-PRAGMA foreign_keys = ON;
-
-INSERT INTO Users(id, username, password) VALUES\
-	(1, 'test_user1', 'password1')
-;
 "
