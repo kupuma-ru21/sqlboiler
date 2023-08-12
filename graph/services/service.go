@@ -11,16 +11,23 @@ type UserService interface {
 	GetUserByName(ctx context.Context, name string) (*model.User, error)
 }
 
+type LinkService interface {
+	CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error)
+}
+
 type Services interface {
 	UserService
+	LinkService
 }
 
 type services struct {
 	*userService
+	*linkService
 }
 
 func New(exec boil.ContextExecutor) Services {
 	return &services{
 		userService: &userService{exec: exec},
+		linkService: &linkService{exec: exec},
 	}
 }
