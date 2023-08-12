@@ -128,7 +128,7 @@ func (u *linkService) DeleteLink(ctx context.Context, id string) (*model.Link, e
 		return nil, err
 	}
 
-	return getResLinkForDelete(dbLink), nil
+	return getResLink(dbLink), nil
 }
 
 func (u *linkService) DeleteLinks(ctx context.Context, ids []string) ([]*model.Link, error) {
@@ -145,14 +145,14 @@ func (u *linkService) DeleteLinks(ctx context.Context, ids []string) ([]*model.L
 			return nil, err
 		}
 
-		resLink := getResLinkForDelete(dbLink)
+		resLink := getResLink(dbLink)
 		resLinks = append(resLinks, resLink)
 	}
 
 	return resLinks, nil
 }
 
-func getResLinkForDelete(dbLink *db.Link) (resLink *model.Link) {
+func getResLink(dbLink *db.Link) (resLink *model.Link) {
 	return &model.Link{
 		ID:      dbLink.ID,
 		Title:   dbLink.Title.String,
