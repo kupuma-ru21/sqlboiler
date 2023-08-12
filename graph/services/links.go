@@ -15,7 +15,7 @@ type linkService struct {
 	exec boil.ContextExecutor
 }
 
-func (u *linkService) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
+func (u *linkService) CreateLink(ctx context.Context, input model.CreateLinkInput) (*model.Link, error) {
 	id := uuid.New()
 	newLink := db.Link{
 		ID:      id.String(),
@@ -34,14 +34,14 @@ func (u *linkService) CreateLink(ctx context.Context, input model.NewLink) (*mod
 	}, nil
 }
 
-func (u *linkService) UpdateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
+func (u *linkService) UpdateLink(ctx context.Context, input model.UpdateLinkInput) (*model.Link, error) {
 	dbLink, err := db.Links(
 		qm.Select(
 			db.LinkColumns.ID,
 			db.LinkColumns.Title,
 			db.LinkColumns.Address,
 		),
-		db.LinkWhere.ID.EQ(*input.ID),
+		db.LinkWhere.ID.EQ(input.ID),
 	).One(ctx, u.exec)
 	if err != nil {
 		return nil, err

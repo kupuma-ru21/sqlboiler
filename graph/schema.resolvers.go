@@ -11,12 +11,12 @@ import (
 )
 
 // CreateLink is the resolver for the createLink field.
-func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
+func (r *mutationResolver) CreateLink(ctx context.Context, input model.CreateLinkInput) (*model.Link, error) {
 	return r.Srv.CreateLink(ctx, input)
 }
 
 // UpdateLink is the resolver for the updateLink field.
-func (r *mutationResolver) UpdateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
+func (r *mutationResolver) UpdateLink(ctx context.Context, input model.UpdateLinkInput) (*model.Link, error) {
 	return r.Srv.UpdateLink(ctx, input)
 }
 
