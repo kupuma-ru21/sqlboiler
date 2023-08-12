@@ -23,6 +23,7 @@ type Query {
 input NewLink {
   title: String!
   address: String!
+  id: ID
 }
 
 input RefreshTokenInput{
@@ -41,6 +42,7 @@ input Login {
 
 type Mutation {
   createLink(input: NewLink!): Link!
+  updateLink(input: NewLink!): Link!
   createUser(input: NewUser!): String!
   login(input: Login!): String!
   # we'll talk about this in authentication section

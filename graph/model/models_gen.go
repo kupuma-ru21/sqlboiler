@@ -15,8 +15,9 @@ type Login struct {
 }
 
 type NewLink struct {
-	Title   string `json:"title"`
-	Address string `json:"address"`
+	Title   string  `json:"title"`
+	Address string  `json:"address"`
+	ID      *string `json:"id,omitempty"`
 }
 
 type NewUser struct {

@@ -34,6 +34,30 @@ func (u *linkService) CreateLink(ctx context.Context, input model.NewLink) (*mod
 	}, nil
 }
 
+func (u *linkService) UpdateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
+	dbLink, err := db.Links(
+		qm.Select(
+			db.LinkColumns.ID,
+			db.LinkColumns.Title,
+			db.LinkColumns.Address,
+		),
+		db.LinkWhere.ID.EQ(*input.ID),
+	).One(ctx, u.exec)
+	if err != nil {
+		return nil, err
+	}
+
+	dbLink.Title = null.StringFrom(input.Title)
+	dbLink.Address = null.StringFrom(input.Address)
+	dbLink.Update(ctx, u.exec, boil.Infer())
+
+	return &model.Link{
+		ID:      dbLink.ID,
+		Title:   input.Title,
+		Address: input.Address,
+	}, nil
+}
+
 func (u *linkService) GetLinks(ctx context.Context) ([]*model.Link, error) {
 	dbLinks, err := db.Links(
 		qm.Select(
