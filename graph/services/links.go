@@ -51,6 +51,7 @@ func (u *linkService) CreateLinks(ctx context.Context, input []*model.CreateLink
 			Address: newLink.Address.String,
 		}
 		resLinks = append(resLinks, resLink)
+		// TODO: change position of error handling
 		if err != nil {
 			return nil, err
 		}
@@ -74,6 +75,7 @@ func (u *linkService) UpdateLink(ctx context.Context, input model.UpdateLinkInpu
 
 	dbLink.Title = null.StringFrom(input.Title)
 	dbLink.Address = null.StringFrom(input.Address)
+	// TODO: add error handling
 	dbLink.Update(ctx, u.exec, boil.Infer())
 
 	return &model.Link{
@@ -81,6 +83,37 @@ func (u *linkService) UpdateLink(ctx context.Context, input model.UpdateLinkInpu
 		Title:   input.Title,
 		Address: input.Address,
 	}, nil
+}
+
+func (u *linkService) UpdateLinks(ctx context.Context, input []*model.UpdateLinkInput) ([]*model.Link, error) {
+	var resLinks []*model.Link
+	for _, i := range input {
+		dbLink, err := db.Links(
+			qm.Select(
+				db.LinkColumns.ID,
+				db.LinkColumns.Title,
+				db.LinkColumns.Address,
+			),
+			db.LinkWhere.ID.EQ(i.ID),
+		).One(ctx, u.exec)
+		if err != nil {
+			return nil, err
+		}
+
+		dbLink.Title = null.StringFrom(i.Title)
+		dbLink.Address = null.StringFrom(i.Address)
+		if _, err := dbLink.Update(ctx, u.exec, boil.Infer()); err != nil {
+			return nil, err
+		}
+		resLink := &model.Link{
+			ID:      dbLink.ID,
+			Title:   i.Title,
+			Address: i.Address,
+		}
+		resLinks = append(resLinks, resLink)
+	}
+
+	return resLinks, nil
 }
 
 func (u *linkService) GetLinks(ctx context.Context) ([]*model.Link, error) {

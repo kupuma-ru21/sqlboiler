@@ -17,6 +17,7 @@ type LinkService interface {
 	GetLinks(ctx context.Context) ([]*model.Link, error)
 	GetLinkByTitle(ctx context.Context, title string) (*model.Link, error)
 	UpdateLink(ctx context.Context, input model.UpdateLinkInput) (*model.Link, error)
+	UpdateLinks(ctx context.Context, input []*model.UpdateLinkInput) ([]*model.Link, error)
 }
 
 type Services interface {
