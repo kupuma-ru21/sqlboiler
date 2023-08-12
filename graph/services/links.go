@@ -78,11 +78,7 @@ func (u *linkService) UpdateLink(ctx context.Context, input model.UpdateLinkInpu
 		return nil, err
 	}
 
-	return &model.Link{
-		ID:      dbLink.ID,
-		Title:   input.Title,
-		Address: input.Address,
-	}, nil
+	return getResLink(dbLink), nil
 }
 
 func (u *linkService) UpdateLinks(ctx context.Context, input []*model.UpdateLinkInput) ([]*model.Link, error) {
@@ -105,11 +101,7 @@ func (u *linkService) UpdateLinks(ctx context.Context, input []*model.UpdateLink
 		if _, err := dbLink.Update(ctx, u.exec, boil.Infer()); err != nil {
 			return nil, err
 		}
-		resLink := &model.Link{
-			ID:      dbLink.ID,
-			Title:   i.Title,
-			Address: i.Address,
-		}
+		resLink := getResLink(dbLink)
 		resLinks = append(resLinks, resLink)
 	}
 
