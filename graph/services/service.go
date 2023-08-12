@@ -19,6 +19,7 @@ type LinkService interface {
 	UpdateLink(ctx context.Context, input model.UpdateLinkInput) (*model.Link, error)
 	UpdateLinks(ctx context.Context, input []*model.UpdateLinkInput) ([]*model.Link, error)
 	DeleteLink(ctx context.Context, id string) (*model.Link, error)
+	DeleteLinks(ctx context.Context, ids []string) ([]*model.Link, error)
 }
 
 type Services interface {

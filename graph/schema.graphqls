@@ -51,6 +51,7 @@ type Mutation {
   updateLink(input: UpdateLinkInput!): Link!
   updateLinks(input: [UpdateLinkInput!]!): [Link!]!
   deleteLink(id: ID!): Link!
+  deleteLinks(ids: [ID!]!): [Link!]!
   createUser(input: NewUser!): String!
   login(input: Login!): String!
   # we'll talk about this in authentication section

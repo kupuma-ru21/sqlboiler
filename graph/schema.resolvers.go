@@ -35,6 +35,11 @@ func (r *mutationResolver) DeleteLink(ctx context.Context, id string) (*model.Li
 	return r.Srv.DeleteLink(ctx, id)
 }
 
+// DeleteLinks is the resolver for the deleteLinks field.
+func (r *mutationResolver) DeleteLinks(ctx context.Context, ids []string) ([]*model.Link, error) {
+	return r.Srv.DeleteLinks(ctx, ids)
+}
+
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (string, error) {
 	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
