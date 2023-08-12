@@ -13,6 +13,7 @@ type UserService interface {
 
 type LinkService interface {
 	CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error)
+	GetLinks(ctx context.Context) ([]*model.Link, error)
 }
 
 type Services interface {

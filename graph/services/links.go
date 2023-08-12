@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
 type linkService struct {
@@ -31,4 +32,28 @@ func (u *linkService) CreateLink(ctx context.Context, input model.NewLink) (*mod
 		Title:   input.Title,
 		Address: input.Address,
 	}, nil
+}
+
+func (u *linkService) GetLinks(ctx context.Context) ([]*model.Link, error) {
+	dbLinks, err := db.Links(
+		qm.Select(
+			db.LinkColumns.ID,
+			db.LinkColumns.Title,
+			db.LinkColumns.Address,
+		)).All(ctx, u.exec)
+	if err != nil {
+		return nil, err
+	}
+
+	var links []*model.Link
+	for _, dbLink := range dbLinks {
+		link := &model.Link{
+			ID:      dbLink.ID,
+			Title:   dbLink.Title.String,
+			Address: dbLink.Address.String,
+		}
+		links = append(links, link)
+	}
+
+	return links, nil
 }
